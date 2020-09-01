@@ -1,7 +1,7 @@
 let tbody = document.querySelector('#table tbody');
 let dataset = [];
 document.querySelector('#exec').addEventListener('click', function() {
-	// Initialize tbody innner
+	// Initialize tbody inner
 	tbody.innerHTML = '';
 	let hor = parseInt(document.querySelector('#hor').value);
 	let ver = parseInt(document.querySelector('#ver').value);
@@ -52,6 +52,34 @@ document.querySelector('#exec').addEventListener('click', function() {
 					}
 				}
 			});
+
+			// click event
+			td.addEventListener('click', function (e) {
+				let parentTr = e.currentTarget.parentNode;
+				let parentTbody = e.currentTarget.parentNode.parentNode;
+				let rightClickCol = Array.prototype.indexOf.call(parentTr.children, e.currentTarget);
+				let rightClickRow = Array.prototype.indexOf.call(parentTbody.children, parentTr);
+				if (dataset[rightClickRow][rightClickCol] === 'X') {
+					e.currentTarget.textContent = '☠';		// https://www.w3schools.com/charsets/ref_utf_symbols.asp
+				} else {
+					let aroundGroup = [
+						dataset[rightClickRow][rightClickCol - 1], dataset[rightClickRow][rightClickCol + 1],
+					];
+
+					if (dataset[rightClickRow - 1]) {
+						aroundGroup = aroundGroup.concat(
+							dataset[rightClickRow - 1][rightClickCol - 1], dataset[rightClickRow - 1][rightClickCol], dataset[rightClickRow - 1][rightClickCol + 1]);
+					
+						} else if (dataset[rightClickRow + 1]) {
+						aroundGroup = aroundGroup.concat(
+							dataset[rightClickRow + 1][rightClickCol - 1], dataset[rightClickRow + 1][rightClickCol], dataset[rightClickRow + 1][rightClickCol + 1]);
+					}
+
+					e.currentTarget.textContent = aroundGroup.filter(function(v) {
+						return v === 'X';
+					}).length;
+				}
+			}); 
 			tr.appendChild(td);
 		}
 		tbody.appendChild(tr);
